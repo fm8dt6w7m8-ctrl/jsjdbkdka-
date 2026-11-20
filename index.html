@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLACKNET // TERMINAL</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#020603;color:#00ff66;
+ font-family:Consolas,monospace;overflow:hidden;
+}
+canvas{position:fixed;inset:0;opacity:.22;z-index:-1}
+header{
+ padding:15px;border-bottom:1px solid #00ff66;
+ display:flex;justify-content:space-between;
+ background:#001508;
+}
+.logo{font-size:19px;font-weight:bold;text-shadow:0 0 12px #00ff66}
+.status{color:#00ff66;font-size:12px}
+main{padding:18px;max-width:950px;margin:auto}
+h2{font-size:16px;letter-spacing:3px}
+.panel{
+ border:1px solid #00a844;background:#001006;
+ padding:15px;box-shadow:0 0 18px #003d19;
+}
+#output{
+ height:55vh;overflow-y:auto;font-size:13px;
+ line-height:1.65;white-space:pre-wrap;
+}
+.line{color:#00ff66}
+.warn{color:#ffe600}
+.error{color:#ff5555}
+input{
+ width:100%;background:#000;color:#00ff66;
+ border:1px solid #00ff66;padding:14px;
+ font:15px Consolas;outline:none;margin-top:12px;
+}
+button{
+ background:#003b19;color:#00ff66;
+ border:1px solid #00ff66;padding:12px;
+ font:bold 13px Consolas;cursor:pointer;
+}
+button:hover{background:#006b2c}
+.buttons{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+footer{font-size:11px;color:#008c40;margin-top:15px}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<header>
+ <div class="logo">BLACKNET // TERMINAL</div>
+ <div class="status">● SYSTEM ONLINE</div>
+</header>
+<main>
+ <h2>ROOT ACCESS TERMINAL v9.4</h2>
+ <div class="panel">
+  <div id="output"></div>
+  <input id="command" placeholder="Wpisz komendę..." autocomplete="off">
+  <div class="buttons">
+   <button onclick="runCommand()">EXECUTE</button>
+   <button onclick="clearTerminal()">CLEAR</button>
+  </div>
+ </div>
+ <footer>BLACKNET OS // VISUAL SIMULATION ONLY</footer>
+</main>
+
+<script>
+const output=document.getElementById("output");
+const input=document.getElementById("command");
+
+function log(text,type="line"){
+ const div=document.createElement("div");
+ div.className=type;
+ div.textContent=text;
+ output.appendChild(div);
+ output.scrollTop=output.scrollHeight;
+}
+
+function wait(ms){
+ return new Promise(resolve=>setTimeout(resolve,ms));
+}
+
+async function hack(){
+ const steps=[
+  "[BOOT] Initializing hacking interface...",
+  "[SCAN] Searching simulated network...",
+  "[SCAN] Detecting virtual devices...",
+  "[SCAN] Found DEVICE_001",
+  "[SCAN] Found DEVICE_002",
+  "[SCAN] Found DEVICE_003",
+  "[AUTH] Testing simulated access...",
+  "[AUTH] Access granted (SIMULATION)",
+  "[SYSTEM] All virtual devices displayed.",
+  ">>> HACK SEQUENCE COMPLETE <<<"
+ ];
+ for(let step of steps){
+  log(step);
+  await wait(450+Math.random()*500);
+ }
+}
+
+async function scan(){
+ log("Scanning virtual network...");
+ for(let i=1;i<=8;i++){
+  await wait(300);
+  log("DEVICE_"+String(i).padStart(3,"0")+" | SIMULATED | ONLINE");
+ }
+ log("Scan completed.","warn");
+}
+
+function runCommand(){
+ const cmd=input.value.trim().toLowerCase();
+ if(!cmd)return;
+ log("root@blacknet:~# "+cmd);
+ input.value="";
+
+ if(cmd==="help"){
+  log("AVAILABLE COMMANDS:");
+  log("help  - show commands");
+  log("hack  - start visual hack simulation");
+  log("scan  - scan virtual devices");
+  log("status - system status");
+  log("clear - clear terminal");
+  log("matrix - matrix animation");
+ }else if(cmd==="hack"){
+  hack();
+ }else if(cmd==="scan"){
+  scan();
+ }else if(cmd==="status"){
+  log("SYSTEM: ONLINE");
+  log("NETWORK: SIMULATED");
+  log("SECURITY: VISUAL DEMO");
+ }else if(cmd==="clear"){
+  clearTerminal();
+ }else if(cmd==="matrix"){
+  log("MATRIX VISUAL EFFECT: ACTIVE");
+ }else{
+  log("Unknown command. Type help.","error");
+ }
+}
+
+function clearTerminal(){
+ output.innerHTML="";
+ log("BLACKNET TERMINAL CLEARED.");
+}
+
+input.addEventListener("keydown",e=>{
+ if(e.key==="Enter")runCommand();
+});
+
+log("BLACKNET TERMINAL v9.4");
+log("Loading virtual environment...");
+log("Type 'help' to see available commands.");
+log("--------------------------------------");
+
+// Matrix rain
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+let width,height,columns,drops;
+function resize(){
+ width=canvas.width=innerWidth;
+ height=canvas.height=innerHeight;
+ columns=Math.floor(width/16);
+ drops=Array(columns).fill(1);
+}
+resize();
+window.addEventListener("resize",resize);
+setInterval(()=>{
+ ctx.fillStyle="rgba(0,0,0,0.07)";
+ ctx.fillRect(0,0,width,height);
+ ctx.fillStyle="#00ff66";
+ ctx.font="15px monospace";
+ for(let i=0;i<drops.length;i++){
+  const char=String.fromCharCode(33+Math.random()*90);
+  ctx.fillText(char,i*16,drops[i]*16);
+  if(drops[i]*16>height&&Math.random()>.975)drops[i]=0;
+  drops[i]++;
+ }
+},45);
+</script>
+</body>
+</html>
